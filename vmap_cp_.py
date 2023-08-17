@@ -187,7 +187,7 @@ def layernorm_bwd_batcher(
   if x_bdim == x.ndim - 1:
     x = jnp.moveaxis(x, -1, -2)
     x_bdim = x.ndim - 2
-  out_bdims = dz_bdim, x_bdim, batching.not_mapped, batching.not_mapped, batching.not_mapped
+  out_bdims = dz_bdim, x_bdim, batching.not_mapped
   return layernorm_bwd_p.bind(dz, x, mu, rsigma, gamma, zero_centered_gamma=zero_centered_gamma, epsilon=epsilon), out_bdims
 batching.primitive_batchers[layernorm_bwd_p] = layernorm_bwd_batcher
 
@@ -276,7 +276,7 @@ with Mesh(devices, ('dp', 'pp')) as mesh:
 
     pjitter = pjit(graded_f,
                    in_shardings=[PartitionSpec('pp', 'dp', None), PartitionSpec(None), PartitionSpec(None)],
-                   out_shardings=(None, (PartitionSpec('pp', 'dp', None), PartitionSpec(None), PartitionSpec(None)))
+                   out_shardings=(None, (PartitionSpec('pp', 'dp', None), PartitionSpec(), PartitionSpec()))
               )
 
     test_l, test_grads = pjitter(x, gamma, beta)
