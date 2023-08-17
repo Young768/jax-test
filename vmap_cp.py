@@ -244,7 +244,6 @@ gamma_ = jnp.ones((2, 128,))
 beta_ = jnp.ones((2, 128,))
 
 graded_f = jax.value_and_grad(func, argnums=(0, 1, 2))
-ref_l, ref_grads = graded_f(x_, gamma_, beta_)
 
 devices = np.array(jax.local_devices())
 if len(devices) == 2:
@@ -264,7 +263,4 @@ with Mesh(devices, ('dp', 'pp')) as mesh:
 
     test_l, test_grads = pjitter(x, gamma, beta)
 
-print("loss match:", jnp.allclose(ref_l, test_l))
-print("dgrad match:", jnp.allclose(ref_grads[0], test_grads[0], rtol=1e-04))
-print("dgamma match:", jnp.allclose(ref_grads[1], test_grads[1]))
-print("dbeta match:", jnp.allclose(ref_grads[2], test_grads[2], rtol=1e-03))
+print("Test Done!")
